@@ -45,7 +45,9 @@ public class CardDeliveryTest {
 
         $("button.button").click();
 
-        $(".notification__title")
+        // Проверяем весь блок уведомления (он содержит и заголовок, и текст с датой)
+        // Метод text() в Selenide проверяет наличие подстроки, что делает проверку гибкой
+        $(".notification")
                 .shouldBe(visible, Duration.ofSeconds(15))
                 .shouldHave(text("Успешно"))
                 .shouldHave(text(plannedDate));
