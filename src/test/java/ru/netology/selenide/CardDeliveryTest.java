@@ -13,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.text;
 
 public class CardDeliveryTest {
 
@@ -28,29 +30,24 @@ public class CardDeliveryTest {
         String plannedDate = LocalDate.now().plusDays(3)
                 .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
-        // Город
         $("[data-test-id='city'] input").setValue("Москва");
 
-        // Дата: разбиваем на отдельные действия, чтобы избежать ошибки void
         SelenideElement dateField = $("[data-test-id='date'] input");
-        dateField.doubleClick(); // Выделяем текст
-        dateField.sendKeys(Keys.BACK_SPACE); // Удаляем его
-        dateField.setValue(plannedDate); // Вводим новую дату
+        dateField.doubleClick();
+        dateField.sendKeys(Keys.BACK_SPACE);
+        dateField.setValue(plannedDate);
 
-        // ФИО
         $("[data-test-id='name'] input").setValue("Иван Иванов");
 
-        // Телефон
         $("[data-test-id='phone'] input").setValue("+79991234567");
 
-        // Чекбокс согласия
         $("[data-test-id='agreement'] .checkbox__text").click();
 
-        // Кнопка "Запланировать"
         $("button.button").click();
 
-        // Проверка успешного уведомления
         $(".notification__title")
-                .shouldBe(Condition.visible, Duration.ofSeconds(15));
+                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldHave(text("Успешно"))
+                .shouldHave(text(plannedDate));
     }
 }
